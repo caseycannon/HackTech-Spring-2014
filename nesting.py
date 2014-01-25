@@ -1,10 +1,10 @@
+#Casey Cannon and Reyna Hulett
+
 from pngIO import *
 from math import *
 
-def test((a,b), (c,d)):
-    img = [[[255 for color in range(3)] for row in range(300)] for col in range(600)]
 
-    saveRGB(img, "test.png")
+def newPoints((a,b), (c,d)):
     img[a][b] = [0,0,0]
     img[c][d] = [255,0,0]
 
@@ -24,7 +24,25 @@ def test((a,b), (c,d)):
     v = int(c - k*w*cos(phi))
     z = int(d + k*w*sin(phi))
 
-    img[y][x] = [0,255,0]
-    img[z][v] = [0,0,255]    
-    
-    saveRGB(img, "clipboard-m.png")
+    return (x,y,v,z)
+
+def interpolate(img, x, y):
+    px = x - int(x)
+    py = y - int(y)
+    newColor = [0,0,0]
+    for color in range(3):
+        u = img[int(y)][int(x)][color] + px * (img[int(y)][int(x)+1][color])
+        v = img[int(y)+1][int(x)][color] + px * (img[int(y)+1][int(x)+1][color])
+        newColor[color] = int(u + py *(v-u))
+    return newColor
+
+def main():
+    img = getRGB('clipboard.png')
+    h = len(img)
+    w = len(img[0])
+    fakeImg = [ [[0,1,0], [2,1,3]], [[2,1,3], [4,1,5]] ]
+    print interpolate(fakeImg,0.5,0.5)
+
+
+if __name__ == "__main__":
+    main()
